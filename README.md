@@ -3,5 +3,4 @@ Created with the purpose of making my life easier while I try to listen to all t
 
 ## Missing
 - Help 
-- Adding an album as listened
 - Start playing the album on spotify
