@@ -3,12 +3,14 @@ import random
 
 #to be implemented
 def arguments():
-    if len(sys.argv) > 2:
+    if  3 >= len(sys.argv) > 2:
         if sys.argv[1] == '-i':
-            finished_album(sys.argv[2])
+            finished_album(int(sys.argv[2]))
+        elif sys.argv[1] == '-r':
+            remove_listened(int(sys.argv[2]))
         else:
             print("Error: command invalid. Use -h for help.")
-    elif len(sys.argv) > 1:
+    elif 2 >= len(sys.argv) > 1:
         if sys.argv[1] == '-h':
             print("Help missing.")
         else:
@@ -17,52 +19,76 @@ def arguments():
         print("Running normally")
         running()
 
-def check_existence(album):
+
+def remove_listened(number):
+    if not check_album_existence(number, "listened"):
+        print("The number of the album does not exist.\nFinishing.")
+        return
+    with open("listened", "r") as fp:
+        lines = fp.readlines()
+    with open("listened", "w") as fp:
+        for line in lines:
+            if line.strip() != lines[number]:
+                fp.write(line)
+
+
+def random_number():
+    return random.randint(0,12) #1-1001
+
+
+def album_by_number(number):
     fp = open("test")
-    if album in fp.read():
+    lines = fp.readlines()
+    fp.close()
+    return lines[number]
+
+
+def check_album_existence(n_album, file_name): 
+    with open(file_name) as fp:
+        size = len([0 for _ in fp])
+    if n_album < size:
         fp.close()
         return True
     fp.close()
     return False
 
-def finished_album(album):
-    if album_listened(album):
+
+def finished_album(number):
+    if not check_album_existence(number, "test"):
+        print("The number of the album does not exist.\nFinishing.")
+        return
+    if album_been_listened(number):
         print("Album has already been listened before.\nFinishing.")
     else:
-        if(check_existence(album)):
-            fp = open("listened", "a")
-            fp.write(album)
-            fp.close()
-        else:
-            print("Album does not exist.\n")
-
-#checks in the listened file for the album
-def album_listened(line):
-    fp = open("listened")
-    if line in fp.read():
+        fp = open("listened", "a")
+        fp.write(album_by_number(number))
+        print("The album was added to the listened list.\nFinishing.")
         fp.close()
-        return True
-    fp.close()
-    return False  
 
-def random_number():
-    return random.randint(0,12) #1-1001
 
-#fetches all the lines in the entire list
-def getline(number_line):
+def album_been_listened(number_line):
     fp = open("test")
     lines = fp.readlines()
     fp.close()
-    return lines[number_line]
+    album = lines[number_line]
+    fp_listened = open("listened")
+    if album in fp_listened.read():
+        fp_listened.close()
+        return True
+    fp_listened.close()
+    return False    
+
 
 def running():
     number_line = random_number()
-    line = getline(number_line).rstrip() #removes the newline created by readlines
-    if(album_listened(line)):
-        #print("No.\n")
+    album = album_by_number(number_line).rstrip() #string
+    if(album_been_listened(number_line)):
+        print(album)
         running()
     else:
-        print(line)
+        #number: album without newline
+        print(str(number_line) + ": " + album) 
+
 
 def main():
     arguments()
