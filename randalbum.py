@@ -2,12 +2,18 @@ import sys
 import asyncio
 import random
 import spotify
+import time
+from subprocess import call
 
 client = spotify.Client('e05eaa83adef40d880e370a1c0685e53', 'f5e057bbed864fdeb793bf725d23a3f3')
 
 async def research_album(album):
     results = await client.search(album, types=["artist", "album"])
-    print(results.albums[0])
+    album = await client.get_album(str(results.albums[0]))
+    all_tracks = await album.get_all_tracks()
+    print(all_tracks[0])
+    call(["spotify", "--uri=" + str(all_tracks[0]) + "#0:0.01"])
+
 
 #to be implemented
 def arguments():
@@ -95,10 +101,12 @@ def running():
     else:
         #number: album without newline
         print(str(number_line) + ": " + album) 
+        asyncio.get_event_loop().run_until_complete(research_album(album))
 
 
 def main():
+    sys.tracebacklimit = 0
     arguments()
-    asyncio.get_event_loop().run_until_complete(research_album("21 - Adele"))
+    running()
 
 main()
