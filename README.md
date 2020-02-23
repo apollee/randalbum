@@ -4,4 +4,3 @@ Created with the purpose of making my life easier while I try to listen to all t
 ## Features to implement
 - Help 
 - Searching for album and artist (?)
-- Start playing the album on spotify
