@@ -1,5 +1,13 @@
 import sys
+import asyncio
 import random
+import spotify
+
+client = spotify.Client('e05eaa83adef40d880e370a1c0685e53', 'f5e057bbed864fdeb793bf725d23a3f3')
+
+async def research_album(album):
+    results = await client.search(album, types=["artist", "album"])
+    print(results.albums[0])
 
 #to be implemented
 def arguments():
@@ -83,7 +91,6 @@ def running():
     number_line = random_number()
     album = album_by_number(number_line).rstrip() #string
     if(album_been_listened(number_line)):
-        print(album)
         running()
     else:
         #number: album without newline
@@ -92,5 +99,6 @@ def running():
 
 def main():
     arguments()
+    asyncio.get_event_loop().run_until_complete(research_album("21 - Adele"))
 
 main()
